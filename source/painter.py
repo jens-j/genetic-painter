@@ -31,11 +31,11 @@ class Painter(QWidget):
         self.ui = loadUi('%s/../gui/genetic.ui' %
                     os.path.dirname(os.path.realpath(sys.argv[0])))
 
-        population = 50
+        population = 4
         resolution = 200
-        triangles  = 200
+        triangles  = 10
 
-        ref = Image.open('../input/astronaut.jpg')
+        ref = Image.open('../input/walter.jpg')
         ref = ref.convert("RGB")
         self.ref = ref
         thumb = ref.copy()

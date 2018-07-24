@@ -14,15 +14,15 @@ from PIL.ImageQt import ImageQt
 class Gene:
     """ codes a single triangle with color and alpha. """
 
-    MAX_ALPHA = 100
-    MIN_ALPHA = 10
-    STD_ALPHA = 10.0
+    MAX_ALPHA = 40
+    MIN_ALPHA = 8
+    STD_ALPHA = 3.0
     STD_COLOR = 20.0
     STD_SPACE = 0.02 # standard deviation as fraction of the image size
     STD_PROMINENCE = 0.02
 
 
-    def __init__(self, genome, color=None, vertices=None, active=True):
+    def __init__(self, genome, color=None, vertices=None, prominence=None):
         """ create a new random gene. 
 
             genome     -- the genome this gene is part of
@@ -48,11 +48,13 @@ class Gene:
             self.color = color
         else:
             self.color = [randint(0, 255), randint(0, 255), randint(0, 255)]
-            if active:
-                #self.color.append(randint(self.MIN_ALPHA, self.MAX_ALPHA))
-                self.color.append(0)
-            else:
-                self.color.append(0)
+            self.color.append(randint(self.MIN_ALPHA, self.MAX_ALPHA))
+            #self.color.append(0)
+
+        if prominence is not None:
+            self.prominence = prominence
+        else:
+            self.prominence = uniform(0,1)
 
 
 
@@ -81,6 +83,11 @@ class Gene:
 
             self.vertices[i] = (x, y)
 
+        # mutate prominence
+        if uniform(0,1) < rate:
+            self.prominence = max(0, min(1, np.random.normal(self.prominence, self.STD_PROMINENCE)))
+            self.genome.sortedGenes = sorted(self.genome.genes, key=lambda g: g.prominence)
+
 
 class Genome:
 
@@ -104,18 +111,16 @@ class Genome:
             for i in range(length):
                 self.genes.append(Gene(self, 
                                        color=copy(genes[i].color), 
-                                       vertices=copy(genes[i].vertices)))
+                                       vertices=copy(genes[i].vertices),
+                                       prominence=copy(genes[i].prominence)))
 
         # Create a random new genome
         else:
             for i in range(length):
+                self.genes.append(Gene(self))
 
-                self.genes.append(Gene(self, active=True))
-                        
-                # if i < length * self.ACTIVE_FRAC:
-                #     self.genes.append(Gene(self, active=True))
-                # else:
-                #     self.genes.append(Gene(self, active=False))
+        # sort genes by prominence
+        self.sortedGenes = sorted(self.genes, key=lambda g: g.prominence)
 
         self.phenome = None
 
@@ -153,8 +158,11 @@ class Genome:
         drw = ImageDraw.Draw(img, 'RGBA')
 
         for i in range(self.length):
-            scaledVertices = [(x*resolution[0], y*resolution[1]) for (x, y) in self.genes[i].vertices]
-            drw.polygon(scaledVertices, tuple(self.genes[i].color))
+
+            scaledVertices = [(x*resolution[0], y*resolution[1]) for 
+                (x, y) in self.sortedGenes[i].vertices]
+
+            drw.polygon(scaledVertices, tuple(self.sortedGenes[i].color))
 
         del drw
         self.phenome = img

@@ -15,7 +15,7 @@ class Population:
     MAX_SP = 0.1
 
     CROSSOVER_RATE = 1.0
-    MUTATION_RATE = 0.001  
+    MUTATION_RATE = 0.002
 
     def __init__(self, image, int_res, n_triangles, pop_size):
         """ Create a new population of random genomes. """
@@ -71,7 +71,7 @@ class Population:
 
         # Calculate the best fitness as percentage 
         sum = self.fitnessRanking[0]
-        total =  self.ref.width * self.ref.height * 3 * 255 * 255 # error is squared
+        total = self.ref.width * self.ref.height * 3 * 255 * 255 # error is squared
         self.fitnessPercentage = 100 - (100.0 * sum / total)
 
         print('fitness:   %0.2f ms' % (1000 * (datetime.now() - t).total_seconds()))
@@ -80,7 +80,7 @@ class Population:
         # Pick (population / 2) pairs to produce 2 offspring each
         for i in range(int(self.size / 2)):
 
-            # Pick two (diffenent) members of the population as parents
+            # Pick two (different) members of the population as parents
             p0 = self._pickMate(self.genomeRanking)
             p1 = p0
             while p1 == p0:
