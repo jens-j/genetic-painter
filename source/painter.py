@@ -32,10 +32,10 @@ class Painter(QWidget):
                     os.path.dirname(os.path.realpath(sys.argv[0])))
 
         population = 4
-        resolution = 200
-        triangles  = 10
+        resolution = 300
+        triangles  = 600
 
-        ref = Image.open('../input/walter.jpg')
+        ref = Image.open('../input/chameleon.jpg')
         ref = ref.convert("RGB")
         self.ref = ref
         thumb = ref.copy()

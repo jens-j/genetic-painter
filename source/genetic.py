@@ -14,9 +14,9 @@ from PIL.ImageQt import ImageQt
 class Gene:
     """ codes a single triangle with color and alpha. """
 
-    MAX_ALPHA = 40
-    MIN_ALPHA = 8
-    STD_ALPHA = 3.0
+    MAX_ALPHA = 25
+    MIN_ALPHA = 5
+    STD_ALPHA = 2.0
     STD_COLOR = 20.0
     STD_SPACE = 0.02 # standard deviation as fraction of the image size
     STD_PROMINENCE = 0.02
